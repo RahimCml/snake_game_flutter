@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:snake_game/pixel_style.dart';
+import 'package:snake_game/blank_pixel_style.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +13,9 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberOfSquares = 100;
 
+  List<int> snakePosition = [0, 1, 2];
+
+  int foodPosition = 36;
 
 
   @override
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           //collected scores
           Expanded(child: Container(),),
-  
+
           //game grid
           Expanded(
             flex: 3,
@@ -35,15 +36,39 @@ class _HomePageState extends State<HomePage> {
             gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: rowSize),
             itemBuilder: (context, index) {
-              return const PixelStyle();
+              if(snakePosition.contains(index)) {
+                return _snakePixel();
+              } else if(foodPosition == index) {
+                return _foodPixel();
+              }
+               else {
+                return const BlankPixelStyle();
+              }
             }
             )),
-
 
           //play button
           Expanded(child: Container(),),
         ],
       ),
     );
+  }
+  Widget _snakePixel() {
+    return Padding(padding: const EdgeInsets.all(2),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    ),);
+  }
+  Widget _foodPixel() {
+    return Padding(padding: const EdgeInsets.all(2),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    ),);
   }
 }

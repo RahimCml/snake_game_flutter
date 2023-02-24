@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
-class PixelStyle extends StatelessWidget {
-  const PixelStyle({super.key});
+class BlankPixelStyle extends StatelessWidget {
+  const BlankPixelStyle({super.key});
 
   @override
   Widget build(BuildContext context) {
