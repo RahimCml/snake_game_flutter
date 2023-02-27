@@ -9,6 +9,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+enum snake_Direction {UP, DOWN, LEFT, RIGT}
+
 class _HomePageState extends State<HomePage> {
 
   int rowSize = 10;
@@ -16,16 +18,62 @@ class _HomePageState extends State<HomePage> {
 
   List<int> snakePosition = [0, 1, 2];
 
+  var currentDirection = snake_Direction.RIGT;
+
   int foodPosition = 36;
 
   void startGame() {
     Timer.periodic( const Duration(milliseconds: 300), (timer) {
       setState(() {
-        snakePosition.add(snakePosition.last + 1);
-
-        snakePosition.removeAt(0);
+        moveSnake();
       });
     });
+  }
+
+  void moveSnake () {
+    switch(currentDirection) {
+      case snake_Direction.UP:
+        {
+          if(snakePosition.last < rowSize) {
+            snakePosition.add(snakePosition.last - rowSize + totalNumberOfSquares);
+          } else {
+            snakePosition.add(snakePosition.last - rowSize);
+          }
+          snakePosition.removeAt(0);
+        }
+        break;
+      case snake_Direction.DOWN:
+      {
+
+        if(snakePosition.last + rowSize > totalNumberOfSquares) {
+          snakePosition.add(snakePosition.last + rowSize - totalNumberOfSquares);
+        }else {
+          snakePosition.add(snakePosition.last + rowSize);
+        }
+        snakePosition.removeAt(0);
+      }
+        break;
+      case snake_Direction.RIGT:
+      {
+        if(snakePosition.last % rowSize == 9) {
+          snakePosition.add(snakePosition.last + 1 - rowSize);
+        }else {
+          snakePosition.add(snakePosition.last + 1);
+        }
+        snakePosition.removeAt(0);
+      }
+        break;
+      case snake_Direction.LEFT:
+      {
+        if (snakePosition.last % rowSize == 0){
+          snakePosition.add(snakePosition.last - 1 + rowSize);
+        }else {
+          snakePosition.add(snakePosition.last -1);
+        }
+        snakePosition.removeAt(0);
+      }
+        break;
+    }
   }
 
 
@@ -41,21 +89,37 @@ class _HomePageState extends State<HomePage> {
           //game grid
           Expanded(
             flex: 3,
-            child: GridView.builder(
-            itemCount: totalNumberOfSquares,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: rowSize),
-            itemBuilder: (context, index) {
-              if(snakePosition.contains(index)) {
-                return _snakePixel();
-              } else if(foodPosition == index) {
-                return _foodPixel();
+            child: GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if(details.delta.dy < 0 && currentDirection != snake_Direction.DOWN) {
+                  currentDirection = snake_Direction.UP;
+                 } else if (  currentDirection != snake_Direction.UP) {
+                    currentDirection = snake_Direction.DOWN;
+                 }
+                },
+              onHorizontalDragUpdate: (details) {
+                if(details.delta.dx < 0 && currentDirection != snake_Direction.RIGT)  {
+                  currentDirection = snake_Direction.LEFT;
+                  } else if (currentDirection != snake_Direction.LEFT) {
+                    currentDirection = snake_Direction.RIGT;
+                  }
+                },
+              child: GridView.builder(
+              itemCount: totalNumberOfSquares,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: rowSize),
+              itemBuilder: (context, index) {
+                if(snakePosition.contains(index)) {
+                  return _snakePixel();
+                } else if(foodPosition == index) {
+                  return _foodPixel();
+                }
+                 else {
+                  return const BlankPixelStyle();
+                }
               }
-               else {
-                return const BlankPixelStyle();
-              }
-            }
+              ),
             )),
 
           //play button
