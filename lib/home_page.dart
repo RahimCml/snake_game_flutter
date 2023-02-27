@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel_style.dart';
 
@@ -29,7 +30,11 @@ class _HomePageState extends State<HomePage> {
       });
     });
   }
-
+  void eatFood() {
+    while(snakePosition.contains(foodPosition)) {
+      foodPosition = Random().nextInt(totalNumberOfSquares);
+    }
+  }
   void moveSnake () {
     switch(currentDirection) {
       case snake_Direction.UP:
@@ -39,7 +44,6 @@ class _HomePageState extends State<HomePage> {
           } else {
             snakePosition.add(snakePosition.last - rowSize);
           }
-          snakePosition.removeAt(0);
         }
         break;
       case snake_Direction.DOWN:
@@ -50,7 +54,6 @@ class _HomePageState extends State<HomePage> {
         }else {
           snakePosition.add(snakePosition.last + rowSize);
         }
-        snakePosition.removeAt(0);
       }
         break;
       case snake_Direction.RIGT:
@@ -60,7 +63,6 @@ class _HomePageState extends State<HomePage> {
         }else {
           snakePosition.add(snakePosition.last + 1);
         }
-        snakePosition.removeAt(0);
       }
         break;
       case snake_Direction.LEFT:
@@ -70,9 +72,13 @@ class _HomePageState extends State<HomePage> {
         }else {
           snakePosition.add(snakePosition.last -1);
         }
-        snakePosition.removeAt(0);
       }
         break;
+    }
+    if(snakePosition.last == foodPosition) {
+      eatFood();
+    }else {
+      snakePosition.removeAt(0);
     }
   }
 
