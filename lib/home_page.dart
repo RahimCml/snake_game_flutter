@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:snake_game/blank_pixel_style.dart';
 
@@ -16,6 +17,16 @@ class _HomePageState extends State<HomePage> {
   List<int> snakePosition = [0, 1, 2];
 
   int foodPosition = 36;
+
+  void startGame() {
+    Timer.periodic( const Duration(milliseconds: 300), (timer) {
+      setState(() {
+        snakePosition.add(snakePosition.last + 1);
+
+        snakePosition.removeAt(0);
+      });
+    });
+  }
 
 
   @override
@@ -48,7 +59,13 @@ class _HomePageState extends State<HomePage> {
             )),
 
           //play button
-          Expanded(child: Container(),),
+          Expanded(child: Center(
+            child: MaterialButton(
+              child: const Text('PLAY'),
+              color: Colors.white,
+              onPressed:() => startGame(),
+            ),
+          ),),
         ],
       ),
     );
