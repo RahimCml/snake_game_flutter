@@ -27,6 +27,17 @@ class _HomePageState extends State<HomePage> {
     Timer.periodic( const Duration(milliseconds: 300), (timer) {
       setState(() {
         moveSnake();
+
+        if(gameOver()) {
+          timer.cancel();
+
+          showDialog(context: context, builder: (context){
+            return const AlertDialog(
+              title: Text('Game over'),
+              backgroundColor: Colors.green,
+            );
+          });
+        }
       });
     });
   }
@@ -80,6 +91,15 @@ class _HomePageState extends State<HomePage> {
     }else {
       snakePosition.removeAt(0);
     }
+  }
+
+  bool gameOver () {
+    List<int> bodySnake = snakePosition.sublist(0, snakePosition.length - 1);
+
+    if(bodySnake.contains(snakePosition.last)) {
+      return true;
+    }
+    return false;
   }
 
 
